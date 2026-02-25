@@ -1,0 +1,70 @@
+{% extends "recommender/base.html" %}
+
+{% block title %}Upload Resume | AI Internship Recommender{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <!-- Header -->
+                <div class="bg-primary text-white text-center p-4">
+                    <h3 class="fw-bold mb-1">AI Resume Analyzer</h3>
+                    <p class="mb-0 opacity-75">Upload your resume and unlock smart internship matches</p>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body p-5 text-center">
+
+                    <div class="mb-4">
+                        <div class="display-4">📄</div>
+                        <h5 class="fw-semibold mt-2">Upload Your Resume (PDF)</h5>
+                        <p class="text-muted">
+                            Our AI reads your skills, projects, and experience to find the most relevant opportunities.
+                        </p>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data" action="{% url 'recommender:upload_resume' %}">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <input type="file" 
+                                   name="resume" 
+                                   class="form-control form-control-lg rounded-pill px-4" 
+                                   accept=".pdf" 
+                                   required>
+                            <small class="text-muted d-block mt-2">
+                                Supported format: PDF only • Max 2 pages recommended
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow">
+                            🚀 Analyze Resume & Find Matches
+                        </button>
+                    </form>
+
+                    <div class="mt-4">
+                        <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                            Powered by Gemini • Vector Search • FAISS
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer Note -->
+            <p class="text-center text-muted small mt-3">
+                Your resume is securely processed and never shared.
+            </p>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

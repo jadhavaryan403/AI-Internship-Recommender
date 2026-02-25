@@ -1,0 +1,157 @@
+{% extends "recommender/base.html" %}
+
+{% block title %}Internship Listings{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Available Internships 💼</h2>
+    </div>
+
+    <!-- 🔎 Combined Filter + Search -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <form method="GET" class="row align-items-end g-3">
+
+                <!-- 📍 Location Filter -->
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Filter by Location</label>
+                    <select name="location" class="form-select location-select">
+                        <option value="">All Locations</option>
+                        {% for city in city_list %}
+                            <option value="{{ city }}"
+                                {% if city == selected_location %}selected{% endif %}>
+                                {{ city }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- 🔍 Search Input -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Search Internships</label>
+                    <input type="text"
+                           name="q"
+                           class="form-control rounded-pill"
+                           placeholder="AI, Data Science, Web..."
+                           value="{{ query|default:'' }}">
+                </div>
+
+                <!-- 🔘 Buttons -->
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit"
+                            class="btn btn-primary rounded-pill w-100">
+                        🔍 Apply
+                    </button>
+
+                    <a href="{% url 'recommender:internship_list' %}"
+                       class="btn btn-outline-secondary rounded-pill w-100">
+                        Reset
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- 📋 Internship Cards -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            {% for internship in internships %}
+            <div class="card border-0 shadow-lg rounded-4 mb-4 overflow-hidden">
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h4 class="fw-bold mb-1">{{ internship.title }}</h4>
+                            <p class="text-muted mb-0">{{ internship.company }}</p>
+                        </div>
+                        <span class="badge bg-primary text-uppercase px-3 py-2">
+                            {{ internship.job_type }}
+                        </span>
+                    </div>
+
+                    <p class="text-secondary mt-3">
+                        {{ internship.description|truncatewords:40 }}
+                    </p>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="text-muted small">
+                            📍 {{ internship.location|default:"Location not specified" }} &nbsp;|&nbsp;
+                            ⏳ {{ internship.duration|default:"Duration N/A" }}
+                        </div>
+
+                        <a href="{% url 'recommender:internship_detail' internship.id %}" 
+                           class="btn btn-outline-primary btn-sm px-4 rounded-pill">
+                            View Details →
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info text-center shadow-sm rounded-3">
+                No internships found for your search.
+            </div>
+            {% endfor %}
+
+            <!-- 📄 Pagination -->
+            {% if internships.has_other_pages %}
+            <nav aria-label="Page navigation" class="mt-5">
+                <ul class="pagination justify-content-center">
+
+                    {% if internships.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link rounded-pill me-2 shadow-sm"
+                               href="?page={{ internships.previous_page_number }}&location={{ selected_location }}&q={{ query }}">
+                                &laquo; Prev
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link rounded-pill me-2 shadow-sm">&laquo; Prev</span>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link rounded-pill shadow-sm px-4">
+                            Page {{ internships.number }} of {{ internships.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if internships.has_next %}
+                        <li class="page-item">
+                            <a class="page-link rounded-pill ms-2 shadow-sm"
+                               href="?page={{ internships.next_page_number }}&location={{ selected_location }}&q={{ query }}">
+                                Next &raquo;
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link rounded-pill ms-2 shadow-sm">Next &raquo;</span>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+<!-- 🔽 Select2 Initialization -->
+<script>
+    $(document).ready(function() {
+        $('.location-select').select2({
+            placeholder: "Search location...",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
+
+{% endblock %}

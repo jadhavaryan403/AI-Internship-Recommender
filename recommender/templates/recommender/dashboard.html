@@ -1,0 +1,126 @@
+{% extends "recommender/base.html" %}
+
+{% block title %}Dashboard | Internship Recommender{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Welcome, {{ request.user.username }} 👋</h2>
+            <p class="text-muted mb-0">Your AI-powered career assistant is ready.</p>
+        </div>
+    
+        <!-- NEW EDIT SKILLS BUTTON -->
+        <a href="{% url 'recommender:edit_skills' %}" 
+           class="btn btn-outline-primary rounded-pill px-4 shadow-sm">
+            ✏️ Edit Skills
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg h-100 rounded-4">
+                <div class="card-body text-center">
+                    <div class="fs-1 mb-2">📄</div>
+                    <h5 class="fw-semibold">Resume Status</h5>
+        
+                    {% if profile.resume_file %}
+                        <p class="text-success fw-semibold mb-3 fs-6">
+                            Uploaded
+                        </p>
+        
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{{ profile.resume_file.url }}"
+                               target="_blank"
+                               class="btn btn-primary btn-lg px-2 rounded-pill shadow">
+                                View Resume
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted fs-6 mb-0">
+                            Not Uploaded
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg h-100 rounded-4">
+                <div class="card-body text-center">
+                    <div class="fs-1 mb-2">🧠</div>
+                    <h5 class="fw-semibold">{{ profile.parsed_skills|length }} Skills Extracted</h5>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        {% for skill in profile.parsed_skills %}
+                            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
+                                {{ skill }}
+                            </span>
+                        {% empty %}
+                            <span class="text-muted">No skills extracted</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg h-100 rounded-4">
+                <div class="card-body text-center">
+                    <div class="fs-1 mb-2">🎯</div>
+                    <h5 class="fw-semibold">AI Matches</h5>
+                    <p class="text-muted mb-0">
+                        {{ recommended_internships|length }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="row mt-5">
+        <div class="col text-center">
+            <h4 class="fw-bold mb-3">Boost your chances with smarter matching</h4>
+            <p class="text-muted mb-4">
+                Upload your latest resume and let AI find internships tailored to your skills.
+            </p>
+
+            <a href="{% url 'recommender:upload_resume' %}" class="btn btn-primary btn-lg px-4 me-2 shadow">
+                📤 Upload Resume
+            </a>
+
+            <a href="{% url 'recommender:internship_list' %}" class="btn btn-outline-dark btn-lg px-4 shadow-sm">
+                🔍 View All Internships
+            </a>
+        </div>
+    </div>
+
+    <!-- Recommendation Preview -->
+    {% if recommended_internships %}
+    <div class="mt-4">
+        <h4 class="fw-bold mb-4">Top AI Recommendations</h4>
+        <div class="list-group shadow-sm rounded-4">
+            {% for item in recommended_internships|slice:":5" %}
+                <a href="{% url 'recommender:internship_detail' item.internship.id %}" 
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1 fw-semibold">{{ item.internship.title }}</h6>
+                        <small class="text-muted">{{ item.internship.company }}</small>
+                    </div>
+                    <span class="badge bg-success rounded-pill">
+                        {{ item.match_percentage }}%
+                    </span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
