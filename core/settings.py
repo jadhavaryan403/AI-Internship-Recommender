@@ -14,8 +14,8 @@ load_dotenv()
 # ===================== SECURITY =====================
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-change-this-in-production")
-DEBUG = True
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+DEBUG = False
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", ".onrender.com"]
 
 
 # ===================== APPLICATIONS =====================
