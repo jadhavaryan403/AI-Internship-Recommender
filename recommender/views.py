@@ -26,7 +26,9 @@ def register(request):
             messages.success(request, "Account created successfully.")
             return redirect('recommender:dashboard')
         else:
-            messages.error(request, f"Error creating account.")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
         form = UserCreationForm()
 
