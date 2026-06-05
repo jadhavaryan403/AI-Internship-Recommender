@@ -4,67 +4,80 @@
 
 {% block content %}
 
-<div class="container py-5">
+<div style="display:flex; justify-content:center; padding:1rem 0;">
+    <div style="width:100%; max-width:560px;">
 
-    <div class="row justify-content-center">
-        <div class="col-lg-7 col-md-9">
+        <div class="section-label" style="text-align:center; margin-bottom:18px;">
+            AI Resume Analyzer — Upload
+        </div>
 
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="card-ind" style="overflow:visible;">
 
-                <!-- Header -->
-                <div class="bg-primary text-white text-center p-4">
-                    <h3 class="fw-bold mb-1">AI Resume Analyzer</h3>
-                    <p class="mb-0 opacity-75">Upload your resume and unlock smart internship matches</p>
+            <!-- Dark header -->
+            <div style="background:#2d3436; border-radius:var(--r-lg) var(--r-lg) 0 0; padding:1.6rem 2rem; border-bottom:2px solid #1a1f20;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
+                    <div style="width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:var(--glow-accent); animation:pulse-led 2.5s ease-in-out infinite;"></div>
+                    <span class="mono" style="font-size:0.78rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#e0e5ec;">Resume Intake Module</span>
+                </div>
+                <p class="mono" style="font-size:0.67rem; letter-spacing:0.07em; text-transform:uppercase; color:#a8b2d1; margin:0;">
+                    Upload your resume — unlock smart internship matches
+                </p>
+            </div>
+
+            <div class="card-body-ind" style="text-align:center; padding:2.5rem 2rem;">
+
+                <!-- Icon housing -->
+                <div style="width:72px; height:72px; border-radius:50%; background:var(--bg); box-shadow:var(--shadow-float); display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                 </div>
 
-                <!-- Body -->
-                <div class="card-body p-5 text-center">
+                <h2 style="font-size:1.25rem; font-weight:800; letter-spacing:-0.02em; color:var(--text); margin:0 0 8px; filter:drop-shadow(0 1px 0 #fff);">
+                    Upload Resume
+                </h2>
+                <p class="mono" style="font-size:0.75rem; color:var(--text-muted); letter-spacing:0.04em; margin:0 0 2rem; line-height:1.7;">
+                    The AI reads your skills, projects, and experience to surface<br>the most relevant internship opportunities.
+                </p>
 
-                    <div class="mb-4">
-                        <div class="display-4">📄</div>
-                        <h5 class="fw-semibold mt-2">Upload Your Resume (PDF)</h5>
-                        <p class="text-muted">
-                            Our AI reads your skills, projects, and experience to find the most relevant opportunities.
+                <form method="post" enctype="multipart/form-data" action="{% url 'recommender:upload_resume' %}">
+                    {% csrf_token %}
+
+                    <div style="margin-bottom:1.5rem; text-align:left;">
+                        <label class="input-label">PDF Document</label>
+                        <div style="position:relative;">
+                            <input type="file"
+                                   name="resume"
+                                   class="input-ind"
+                                   style="padding:14px 20px; cursor:pointer;"
+                                   accept=".pdf"
+                                   required>
+                        </div>
+                        <p class="mono" style="font-size:0.65rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-muted); margin:8px 0 0; opacity:0.7;">
+                            Supported: PDF only &mdash; Max 2 pages recommended
                         </p>
                     </div>
 
-                    <form method="post" enctype="multipart/form-data" action="{% url 'recommender:upload_resume' %}">
-                        {% csrf_token %}
+                    <button type="submit" class="btn-industrial btn-primary-ind" style="width:100%; justify-content:center; font-size:0.82rem; padding:15px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        Analyze Resume &amp; Find Matches
+                    </button>
+                </form>
 
-                        <div class="mb-4">
-                            <input type="file" 
-                                   name="resume" 
-                                   class="form-control form-control-lg rounded-pill px-4" 
-                                   accept=".pdf" 
-                                   required>
-                            <small class="text-muted d-block mt-2">
-                                Supported format: PDF only • Max 2 pages recommended
-                            </small>
-                        </div>
+                <hr class="divider-ind" style="margin:1.75rem 0 1.25rem;">
 
-                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow">
-                            🚀 Analyze Resume & Find Matches
-                        </button>
-                    </form>
-
-                    <div class="mt-4">
-                        <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
-                            Powered by Gemini • Vector Search • FAISS
-                        </span>
-                    </div>
-
+                <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+                    <span class="badge-ind badge-dark">Gemini</span>
+                    <span class="badge-ind badge-dark">Vector Search</span>
+                    <span class="badge-ind badge-dark">FAISS</span>
                 </div>
 
             </div>
-
-            <!-- Footer Note -->
-            <p class="text-center text-muted small mt-3">
-                Your resume is securely processed and never shared.
-            </p>
-
         </div>
-    </div>
 
+        <p class="mono" style="text-align:center; font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin-top:14px; opacity:0.6;">
+            Securely processed &mdash; Never shared with third parties
+        </p>
+
+    </div>
 </div>
 
 {% endblock %}

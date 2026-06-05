@@ -3,43 +3,71 @@
 {% block title %}Login | AI Internship Recommender{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-        <div class="card p-4">
-            <div class="card-body">
 
-                <h3 class="text-center fw-bold mb-3">Welcome Back 👋</h3>
-                <p class="text-center text-muted mb-4">
-                    Login to see your personalized internship recommendations.
+<div style="display:flex; justify-content:center; align-items:center; min-height:calc(100vh - 200px); padding:2rem 0;">
+    <div style="width:100%; max-width:420px;">
+
+        <!-- Panel label -->
+        <div class="section-label" style="text-align:center; margin-bottom:18px;">
+            Auth Terminal — Login
+        </div>
+
+        <div class="card-ind" style="overflow:visible;">
+            <!-- Dark header band -->
+            <div style="background:#2d3436; border-radius:var(--r-lg) var(--r-lg) 0 0; padding:1.6rem 2rem; border-bottom:2px solid #1a1f20; display:flex; align-items:center; gap:12px;">
+                <div style="width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:var(--glow-accent); animation:pulse-led 2.5s ease-in-out infinite;"></div>
+                <div>
+                    <div class="mono" style="font-size:0.78rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#e0e5ec;">Access Required</div>
+                    <div class="mono" style="font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase; color:#a8b2d1;">Enter credentials to continue</div>
+                </div>
+            </div>
+
+            <div class="card-body-ind">
+
+                <h2 style="font-size:1.35rem; font-weight:800; letter-spacing:-0.02em; color:var(--text); margin:0 0 6px; filter:drop-shadow(0 1px 0 #fff);">
+                    Welcome Back
+                </h2>
+                <p class="mono" style="font-size:0.72rem; color:var(--text-muted); letter-spacing:0.05em; text-transform:uppercase; margin:0 0 1.8rem;">
+                    Login to view your personalized matches
                 </p>
 
                 <form method="post">
                     {% csrf_token %}
 
-                    <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" required>
+                    <div style="margin-bottom:1.25rem;">
+                        <label class="input-label">Username</label>
+                        <input type="text" name="username" class="input-ind" placeholder="your_username" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" required>
+                    <div style="margin-bottom:1.75rem;">
+                        <label class="input-label">Password</label>
+                        <input type="password" name="password" class="input-ind" placeholder="••••••••••" required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 mt-2">
-                        🔓 Login
+                    <button type="submit" class="btn-industrial btn-primary-ind" style="width:100%; justify-content:center; font-size:0.82rem; padding:14px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        Authenticate
                     </button>
                 </form>
 
-                <div class="text-center mt-3">
-                    <small class="text-muted">
-                        Don't have an account? 
-                        <a href="{% url 'register' %}">Create one</a>
-                    </small>
-                </div>
+                <hr class="divider-ind" style="margin:1.5rem 0;">
+
+                <p class="mono" style="text-align:center; font-size:0.72rem; color:var(--text-muted); letter-spacing:0.04em; margin:0;">
+                    No account?
+                    <a href="{% url 'register' %}" style="color:var(--accent); font-weight:700; text-decoration:none;">
+                        Register here
+                    </a>
+                </p>
 
             </div>
         </div>
+
+        <!-- Footer note -->
+        <p class="mono" style="text-align:center; font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin-top:14px; opacity:0.6;">
+            Secured Session — Data Encrypted
+        </p>
+
     </div>
 </div>
+
 {% endblock %}

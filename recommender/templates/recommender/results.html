@@ -1,82 +1,136 @@
 {% extends "recommender/base.html" %}
 
-{% block title %}AI Internship Matches{% endblock %}
+{% block title %}AI Internship Matches | Results{% endblock %}
 
 {% block content %}
 
-<div class="text-center mb-5">
-    <h2 class="fw-bold">Your AI-Curated Internship Matches 🎯</h2>
-    <p class="text-muted fs-5">
-        Ranked using deep semantic similarity between your resume and internship roles.
+<!-- ─── Header ─────────────────────────────────────────────────────── -->
+<div style="text-align:center; margin-bottom:2.5rem;">
+    <div class="section-label" style="margin-bottom:10px;">AI Matching Engine — Output</div>
+    <h1 style="font-size:1.9rem; font-weight:800; letter-spacing:-0.02em; color:var(--text); margin:0 0 10px; filter:drop-shadow(0 1px 0 #fff);">
+        Your Curated Matches
+    </h1>
+    <p class="mono" style="font-size:0.78rem; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase; margin:0;">
+        Ranked by deep semantic similarity to your resume
     </p>
 </div>
 
 {% if recommended_internships %}
-<div class="d-flex justify-content-center">
-    <div class="col-lg-8">
 
-        {% for item in recommended_internships %}
-        <div class="card shadow-lg border-0 rounded-4 mb-4">
+<div style="max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:1.25rem;">
 
-            <div class="card-body p-4">
+    {% for item in recommended_internships %}
+    <div class="card-ind">
+        <div class="card-vents">
+            <div class="vent-slot"></div>
+            <div class="vent-slot"></div>
+            <div class="vent-slot"></div>
+        </div>
+        <div class="card-body-ind" style="padding-top:2rem;">
 
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h4 class="fw-semibold">{{ item.internship.title }}</h4>
-                    <span class="badge bg-success fs-6 px-3 py-2 rounded-pill">
-                        {{ item.match_percentage }}% Match
+            <!-- Title + Score -->
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+                <div>
+                    <h3 style="font-size:1.05rem; font-weight:800; margin:0 0 4px; color:var(--text); letter-spacing:-0.01em;">
+                        {{ item.internship.title }}
+                    </h3>
+                    <span class="mono" style="font-size:0.7rem; letter-spacing:0.07em; text-transform:uppercase; color:var(--text-muted);">
+                        {{ item.internship.company }}
                     </span>
                 </div>
-
-                <p class="text-muted">
-                    {{ item.internship.description|truncatewords:45 }}
-                </p>
-
-                <!-- AI Match Bar -->
-                <div class="mb-3">
-                    <small class="text-muted">AI Semantic Alignment</small>
-                    <div class="progress mt-1" style="height: 8px;">
-                        <div class="progress-bar bg-success"
-                             role="progressbar"
-                             style="width: {{ item.match_percentage }}%;">
-                        </div>
+                <div style="text-align:right; flex-shrink:0;">
+                    <div class="mono" style="font-size:1.4rem; font-weight:700; color:var(--accent); line-height:1; letter-spacing:-0.02em;">
+                        {{ item.match_percentage }}%
+                    </div>
+                    <div class="mono" style="font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted);">
+                        Match Score
                     </div>
                 </div>
-
-
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div class="small text-muted">
-                        🏢 <strong>{{ item.internship.company }}</strong><br>
-                        💰 Stipend: {{ item.internship.stipend }}<br>
-                        ⏳ Duration: {{ item.internship.duration }}<br>
-                        <strong>{{ item.matching_skills_count }}</strong> out of <strong>{{ item.total_skills_count }}</strong> required skills matched
-                    </div>
-                    
-
-                    <a href="{% url 'recommender:internship_detail' item.internship.id %}"
-                       class="btn btn-outline-primary rounded-pill px-4">
-                        View Details →
-                    </a>
-                </div>
-
             </div>
-        </div>
-        {% endfor %}
 
+            <!-- Description -->
+            <p style="font-size:0.87rem; color:var(--text-muted); line-height:1.65; margin:0 0 16px;">
+                {{ item.internship.description|truncatewords:45 }}
+            </p>
+
+            <!-- AI alignment bar -->
+            <div style="margin-bottom:16px;">
+                <div class="mono" style="font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px;">
+                    Semantic Alignment
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width:{{ item.match_percentage }}%;"></div>
+                </div>
+            </div>
+
+            <hr class="divider-ind">
+
+            <!-- Meta + CTA -->
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;">
+                <div class="mono" style="font-size:0.7rem; letter-spacing:0.05em; line-height:2; color:var(--text-muted);">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; margin-right:5px; vertical-align:middle;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                        <strong style="color:var(--text); text-transform:uppercase; letter-spacing:0.07em;">{{ item.internship.company }}</strong>
+                    </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; margin-right:5px; vertical-align:middle;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        Stipend: {{ item.internship.stipend }}
+                    </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; margin-right:5px; vertical-align:middle;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Duration: {{ item.internship.duration }}
+                    </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; margin-right:5px; vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg>
+                        <strong style="color:var(--text);">{{ item.matching_skills_count }}</strong> of {{ item.total_skills_count }} required skills matched
+                    </div>
+                </div>
+
+                <a href="{% url 'recommender:internship_detail' item.internship.id %}"
+                   class="btn-industrial btn-primary-ind" style="font-size:0.76rem;">
+                    View Details
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+            </div>
+
+        </div>
     </div>
+    {% endfor %}
+
 </div>
 
 {% else %}
-<div class="d-flex justify-content-center">
-    <div class="col-lg-6">
-        <div class="alert alert-warning text-center shadow-sm rounded-4 p-4">
-            <h5 class="fw-bold">No High-Confidence Matches Found</h5>
-            <p class="mb-0">
+
+<div style="max-width:580px; margin:0 auto;">
+    <div class="card-ind" style="text-align:center;">
+        <div class="card-body-ind" style="padding:3rem 2rem;">
+
+            <!-- Warning LED -->
+            <div style="display:flex; justify-content:center; margin-bottom:1.5rem;">
+                <div style="width:14px; height:14px; border-radius:50%; background:#f59e0b; box-shadow:0 0 12px rgba(245,158,11,0.8); animation:pulse-led 2s ease-in-out infinite;"></div>
+            </div>
+
+            <div class="section-label" style="margin-bottom:12px; justify-content:center; display:flex;">No Results</div>
+            <h3 style="font-size:1.1rem; font-weight:800; color:var(--text); margin:0 0 10px;">
+                No High-Confidence Matches Found
+            </h3>
+            <p class="mono" style="font-size:0.75rem; color:var(--text-muted); letter-spacing:0.04em; line-height:1.8; margin:0 0 1.5rem;">
                 Your resume vector does not strongly align with current internship embeddings.
                 Add more skills, projects, and technologies to improve recommendations.
             </p>
+            <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                <a href="{% url 'recommender:edit_skills' %}" class="btn-industrial btn-primary-ind">
+                    Edit Skills
+                </a>
+                <a href="{% url 'recommender:upload_resume' %}" class="btn-industrial btn-secondary-ind">
+                    Re-upload Resume
+                </a>
+            </div>
+
         </div>
     </div>
 </div>
+
 {% endif %}
 
 {% endblock %}

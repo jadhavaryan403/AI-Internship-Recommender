@@ -4,102 +4,136 @@
 
 {% block content %}
 
-<div class="container py-4">
+<div style="max-width:780px; margin:0 auto;">
 
-    <div class="row justify-content-center">
-        <div class="col-lg-9">
+    <!-- ─── Back link ──────────────────────────────────────────────── -->
+    <div style="margin-bottom:1.5rem;">
+        <a href="{% url 'recommender:internship_list' %}" class="btn-industrial btn-secondary-ind" style="font-size:0.72rem; padding:8px 16px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to Listings
+        </a>
+    </div>
 
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+    <div class="card-ind" style="overflow:visible;">
+        <div class="card-vents">
+            <div class="vent-slot"></div>
+            <div class="vent-slot"></div>
+            <div class="vent-slot"></div>
+        </div>
 
-                <!-- Header -->
-                <div class="card-body p-4 border-bottom">
-                    <h2 class="fw-bold mb-1">{{ internship.title }}</h2>
-                    <p class="text-muted mb-0">{{ internship.company }}</p>
+        <!-- Header band -->
+        <div style="background:#2d3436; border-radius:var(--r-lg) var(--r-lg) 0 0; padding:1.8rem 2rem; border-bottom:2px solid #1a1f20;">
+            <div class="section-label" style="color:#a8b2d1; margin-bottom:10px;">Position Details</div>
+            <h1 style="font-size:1.5rem; font-weight:800; letter-spacing:-0.02em; color:#f0f2f5; margin:0 0 6px;">
+                {{ internship.title }}
+            </h1>
+            <span class="mono" style="font-size:0.75rem; letter-spacing:0.07em; text-transform:uppercase; color:#a8b2d1;">
+                {{ internship.company }}
+            </span>
+        </div>
+
+        <div class="card-body-ind" style="padding-top:2rem;">
+
+            <!-- Match Score -->
+            {% if match_score %}
+            <div style="margin-bottom:2rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span class="section-label">AI Compatibility Score</span>
+                    <span class="mono" style="font-size:1.1rem; font-weight:700; color:var(--accent);">{{ match_score }}%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width:{{ match_score }}%;"></div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Description -->
+            <div style="margin-bottom:2rem;">
+                <div class="section-label" style="margin-bottom:12px;">Role Overview</div>
+                <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.75; margin:0;">
+                    {{ internship.description }}
+                </p>
+            </div>
+
+            <hr class="divider-ind">
+
+            <!-- Meta details -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1.25rem; margin-bottom:2rem;">
+                <div class="card-ind" style="padding:1rem 1.25rem; border-radius:var(--r-md);">
+                    <div class="section-label" style="margin-bottom:6px;">Location</div>
+                    <div class="mono" style="font-size:0.85rem; font-weight:700; color:var(--text);">
+                        {{ internship.location|default:"Not specified" }}
+                    </div>
+                </div>
+                <div class="card-ind" style="padding:1rem 1.25rem; border-radius:var(--r-md);">
+                    <div class="section-label" style="margin-bottom:6px;">Duration</div>
+                    <div class="mono" style="font-size:0.85rem; font-weight:700; color:var(--text);">
+                        {{ internship.duration|default:"Not specified" }}
+                    </div>
+                </div>
+                <div class="card-ind" style="padding:1rem 1.25rem; border-radius:var(--r-md);">
+                    <div class="section-label" style="margin-bottom:6px;">Stipend</div>
+                    <div class="mono" style="font-size:0.85rem; font-weight:700; color:var(--text);">
+                        {{ internship.stipend|default:"Not disclosed" }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills analysis -->
+            {% if matching_skills or non_matching_skills %}
+            <div style="margin-bottom:2rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+                    <div class="section-label">Skill Analysis</div>
+                    <span class="mono" style="font-size:0.75rem; color:var(--text-muted);">
+                        <strong style="color:var(--text);">{{ matching_skills_count }}</strong> / {{ total_skills_count }} skills matched
+                    </span>
                 </div>
 
-                <!-- Match Score -->
-                {% if match_score %}
-                <div class="px-4 pt-4">
-                    <p class="fw-semibold text-success mb-2">
-                        AI Compatibility Score: {{ match_score }}%
-                    </p>
-                    <div class="progress rounded-pill" style="height: 12px;">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated"
-                             role="progressbar"
-                             style="width: {{ match_score }}%;">
-                        </div>
+                <!-- Skill coverage bar -->
+                <div class="progress-track" style="margin-bottom:16px;">
+                    {% if total_skills_count > 0 %}
+                    <div class="progress-fill progress-fill-green"
+                         style="width:{% widthratio matching_skills_count total_skills_count 100 %}%;"></div>
+                    {% endif %}
+                </div>
+
+                {% if matching_skills %}
+                <div style="margin-bottom:14px;">
+                    <span class="mono" style="font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#16a34a; display:block; margin-bottom:8px;">
+                        Matching Skills
+                    </span>
+                    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                        {% for skill in matching_skills %}
+                            <span class="badge-ind badge-success">{{ skill }}</span>
+                        {% endfor %}
                     </div>
                 </div>
                 {% endif %}
 
-                <!-- Content -->
-                <div class="card-body p-4">
-
-                    <h5 class="fw-semibold">Internship Description</h5>
-                    <p class="text-secondary mt-2">
-                        {{ internship.description }}
-                    </p>
-
-                    <div class="row mt-4">
-                        <div class="col-md-4 text-muted small">
-                            📍 <strong>Location:</strong> {{ internship.location|default:"Not specified" }}
-                        </div>
-                        <div class="col-md-4 text-muted small">
-                            ⏳ <strong>Duration:</strong> {{ internship.duration|default:"Not specified" }}
-                        </div>
-                        <div class="col-md-4 text-muted small">
-                            💰 <strong>Stipend:</strong> {{ internship.stipend|default:"Not disclosed" }}
-                        </div>
+                {% if non_matching_skills %}
+                <div>
+                    <span class="mono" style="font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:8px;">
+                        Missing Skills
+                    </span>
+                    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                        {% for skill in non_matching_skills %}
+                            <span class="badge-ind badge-muted">{{ skill }}</span>
+                        {% endfor %}
                     </div>
-
-                    {% if matching_skills or non_matching_skills %}
-                    <div class="row mt-3">
-
-                        <div class="col-12 text-muted small">
-                            <strong>Skills :</strong>
-                            {{ matching_skills_count }} / {{ total_skills_count }}
-                        </div>
-
-                        {% if matching_skills %}
-                        <div class="col-12 mt-2">
-                            <span class="text-success fw-semibold small">✅ Matching Skills:</span>
-                            <div class="d-flex flex-wrap gap-2 mt-1">
-                                {% for skill in matching_skills %}
-                                    <span class="badge bg-success">{{ skill }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {% endif %}
-
-                        {% if non_matching_skills %}
-                        <div class="col-12 mt-2">
-                            <span class="text-danger fw-semibold small">❌ Missing Skills:</span>
-                            <div class="d-flex flex-wrap gap-2 mt-1">
-                                {% for skill in non_matching_skills %}
-                                    <span class="badge bg-secondary">{{ skill }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {% endif %}
-
-                    </div>
-                    {% endif %}
-
                 </div>
+                {% endif %}
 
+            </div>
+            {% endif %}
 
-                <!-- Footer -->
-                <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center px-4 py-3">
-                    <a href="{% url 'recommender:internship_list' %}" 
-                       class="btn btn-outline-secondary rounded-pill px-4">
-                        ← Back to Listings
-                    </a>
+            <hr class="divider-ind">
 
-                    <button class="btn btn-primary rounded-pill px-4 shadow-sm">
-                        Apply Now
-                    </button>
-                </div>
-
+            <!-- Footer actions -->
+            <div style="display:flex; justify-content:flex-end;">
+                <button class="btn-industrial btn-primary-ind" style="padding:13px 32px; font-size:0.82rem;">
+                    Apply Now
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
             </div>
 
         </div>

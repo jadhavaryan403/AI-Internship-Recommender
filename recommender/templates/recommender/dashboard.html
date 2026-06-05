@@ -4,123 +4,163 @@
 
 {% block content %}
 
-<div class="container py-4">
-
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold mb-1">Welcome, {{ request.user.username }} 👋</h2>
-            <p class="text-muted mb-0">Your AI-powered career assistant is ready.</p>
-        </div>
-    
-        <!-- NEW EDIT SKILLS BUTTON -->
-        <a href="{% url 'recommender:edit_skills' %}" 
-           class="btn btn-outline-primary rounded-pill px-4 shadow-sm">
-            ✏️ Edit Skills
-        </a>
+<!-- ─── Page Header ─────────────────────────────────────────────────── -->
+<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:2.5rem; flex-wrap:wrap; gap:1rem;">
+    <div>
+        <div class="section-label" style="margin-bottom:8px;">Control Panel</div>
+        <h1 style="font-size:2rem; font-weight:800; letter-spacing:-0.02em; margin:0 0 6px; color:var(--text); filter:drop-shadow(0 1px 0 #ffffff);">
+            {{ request.user.username }}
+        </h1>
+        <p class="mono" style="font-size:0.78rem; color:var(--text-muted); letter-spacing:0.05em; text-transform:uppercase; margin:0;">
+            AI-Powered Career Assistant — Ready
+        </p>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-lg h-100 rounded-4">
-                <div class="card-body text-center">
-                    <div class="fs-1 mb-2">📄</div>
-                    <h5 class="fw-semibold">Resume Status</h5>
-        
-                    {% if profile.resume_file %}
-                        <p class="text-success fw-semibold mb-3 fs-6">
-                            Uploaded
-                        </p>
-        
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="{{ profile.resume_file.url }}"
-                               target="_blank"
-                               class="btn btn-primary btn-lg px-2 rounded-pill shadow">
-                                View Resume
-                            </a>
-                        </div>
-                    {% else %}
-                        <p class="text-muted fs-6 mb-0">
-                            Not Uploaded
-                        </p>
-                    {% endif %}
+    <a href="{% url 'recommender:edit_skills' %}" class="btn-industrial btn-secondary-ind">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit Skills
+    </a>
+</div>
+
+<!-- ─── Stats Row ───────────────────────────────────────────────────── -->
+<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; margin-bottom:2.5rem;">
+
+    <!-- Resume Status -->
+    <div class="card-ind" style="--hover-lift:0;">
+        <div class="card-vents">
+            <div class="vent-slot"></div>
+            <div class="vent-slot"></div>
+            <div class="vent-slot"></div>
+        </div>
+        <div class="card-body-ind" style="padding-top:2.2rem;">
+            <div class="section-label" style="margin-bottom:14px;">Module 01 — Resume</div>
+            <h3 style="font-size:1rem; font-weight:700; margin:0 0 12px; color:var(--text);">Resume Status</h3>
+
+            {% if profile.resume_file %}
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+                    <div style="width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px rgba(34,197,94,0.8);"></div>
+                    <span class="mono" style="font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:#22c55e; font-weight:700;">Uploaded</span>
                 </div>
-            </div>
-        </div>
-        
-        
-
-        <div class="col-md-4">
-            <div class="card border-0 shadow-lg h-100 rounded-4">
-                <div class="card-body text-center">
-                    <div class="fs-1 mb-2">🧠</div>
-                    <h5 class="fw-semibold">{{ profile.parsed_skills|length }} Skills Extracted</h5>
-                    <div class="d-flex flex-wrap justify-content-center gap-2">
-                        {% for skill in profile.parsed_skills %}
-                            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
-                                {{ skill }}
-                            </span>
-                        {% empty %}
-                            <span class="text-muted">No skills extracted</span>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card border-0 shadow-lg h-100 rounded-4">
-                <div class="card-body text-center">
-                    <div class="fs-1 mb-2">🎯</div>
-                    <h5 class="fw-semibold">AI Matches</h5>
-                    <p class="text-muted mb-0">
-                        {{ recommended_internships|length }}
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CTA Section -->
-    <div class="row mt-5">
-        <div class="col text-center">
-            <h4 class="fw-bold mb-3">Boost your chances with smarter matching</h4>
-            <p class="text-muted mb-4">
-                Upload your latest resume and let AI find internships tailored to your skills.
-            </p>
-
-            <a href="{% url 'recommender:upload_resume' %}" class="btn btn-primary btn-lg px-4 me-2 shadow">
-                📤 Upload Resume
-            </a>
-
-            <a href="{% url 'recommender:internship_list' %}" class="btn btn-outline-dark btn-lg px-4 shadow-sm">
-                🔍 View All Internships
-            </a>
-        </div>
-    </div>
-
-    <!-- Recommendation Preview -->
-    {% if recommended_internships %}
-    <div class="mt-4">
-        <h4 class="fw-bold mb-4">Top AI Recommendations</h4>
-        <div class="list-group shadow-sm rounded-4">
-            {% for item in recommended_internships|slice:":5" %}
-                <a href="{% url 'recommender:internship_detail' item.internship.id %}" 
-                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="mb-1 fw-semibold">{{ item.internship.title }}</h6>
-                        <small class="text-muted">{{ item.internship.company }}</small>
-                    </div>
-                    <span class="badge bg-success rounded-pill">
-                        {{ item.match_percentage }}%
-                    </span>
+                <a href="{{ profile.resume_file.url }}" target="_blank"
+                   class="btn-industrial btn-primary-ind" style="width:100%; justify-content:center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    View Resume
                 </a>
-            {% endfor %}
+            {% else %}
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+                    <div style="width:8px; height:8px; border-radius:50%; background:#f59e0b; box-shadow:0 0 8px rgba(245,158,11,0.7);"></div>
+                    <span class="mono" style="font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:#b45309; font-weight:700;">Not Uploaded</span>
+                </div>
+                <a href="{% url 'recommender:upload_resume' %}"
+                   class="btn-industrial btn-secondary-ind" style="width:100%; justify-content:center;">
+                    Upload Now
+                </a>
+            {% endif %}
         </div>
     </div>
-    {% endif %}
+
+    <!-- Skills -->
+    <div class="card-ind">
+        <div class="card-vents">
+            <div class="vent-slot"></div>
+            <div class="vent-slot"></div>
+            <div class="vent-slot"></div>
+        </div>
+        <div class="card-body-ind" style="padding-top:2.2rem;">
+            <div class="section-label" style="margin-bottom:14px;">Module 02 — Skills</div>
+            <h3 style="font-size:1rem; font-weight:700; margin:0 0 6px; color:var(--text);">
+                Extracted Skills
+            </h3>
+            <div class="mono" style="font-size:1.6rem; font-weight:700; color:var(--accent); margin-bottom:14px; letter-spacing:-0.02em;">
+                {{ profile.parsed_skills|length }}
+                <span style="font-size:0.72rem; color:var(--text-muted); font-weight:500; letter-spacing:0.05em;"> detected</span>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                {% for skill in profile.parsed_skills %}
+                    <span class="badge-ind badge-muted">{{ skill }}</span>
+                {% empty %}
+                    <span class="mono" style="font-size:0.75rem; color:var(--text-muted); letter-spacing:0.04em;">No skills extracted</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Matches -->
+    <div class="card-ind">
+        <div class="card-vents">
+            <div class="vent-slot"></div>
+            <div class="vent-slot"></div>
+            <div class="vent-slot"></div>
+        </div>
+        <div class="card-body-ind" style="padding-top:2.2rem;">
+            <div class="section-label" style="margin-bottom:14px;">Module 03 — AI Matches</div>
+            <h3 style="font-size:1rem; font-weight:700; margin:0 0 6px; color:var(--text);">Compatibility Score</h3>
+            <div class="mono" style="font-size:1.6rem; font-weight:700; color:var(--accent); margin-bottom:8px; letter-spacing:-0.02em;">
+                {{ recommended_internships|length }}
+                <span style="font-size:0.72rem; color:var(--text-muted); font-weight:500; letter-spacing:0.05em;"> roles matched</span>
+            </div>
+            <p class="mono" style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin:0;">
+                Semantic similarity ranking
+            </p>
+        </div>
+    </div>
 
 </div>
+
+<!-- ─── CTA Strip ───────────────────────────────────────────────────── -->
+<div class="card-ind" style="background:#2d3436; margin-bottom:2.5rem;">
+    <div class="card-body-ind" style="text-align:center; padding:2.8rem 2rem;">
+        <div class="section-label" style="color:#a8b2d1; margin-bottom:12px;">Action Required</div>
+        <h2 style="font-size:1.4rem; font-weight:800; color:#f0f2f5; letter-spacing:-0.02em; margin:0 0 10px;">
+            Boost your chances with smarter matching
+        </h2>
+        <p class="mono" style="font-size:0.8rem; color:#a8b2d1; margin:0 0 24px; letter-spacing:0.03em;">
+            Upload your latest resume — let the AI find internships tailored to your skills.
+        </p>
+        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+            <a href="{% url 'recommender:upload_resume' %}" class="btn-industrial btn-primary-ind">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+                Upload Resume
+            </a>
+            <a href="{% url 'recommender:internship_list' %}" class="btn-industrial btn-secondary-ind">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                View All Internships
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ─── Recommendations ─────────────────────────────────────────────── -->
+{% if recommended_internships %}
+<div>
+    <div class="section-label" style="margin-bottom:16px;">Top AI Recommendations</div>
+    <h2 style="font-size:1.25rem; font-weight:800; letter-spacing:-0.01em; margin:0 0 1.5rem; color:var(--text); filter:drop-shadow(0 1px 0 #fff);">
+        Ranked Matches
+    </h2>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+        {% for item in recommended_internships|slice:":5" %}
+        <a href="{% url 'recommender:internship_detail' item.internship.id %}"
+           style="text-decoration:none;"
+           class="card-ind">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:1.1rem 1.5rem; position:relative; z-index:2;">
+                <div style="flex:1; min-width:0;">
+                    <h5 style="font-size:0.92rem; font-weight:700; margin:0 0 3px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        {{ item.internship.title }}
+                    </h5>
+                    <span class="mono" style="font-size:0.7rem; color:var(--text-muted); letter-spacing:0.05em; text-transform:uppercase;">
+                        {{ item.internship.company }}
+                    </span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; flex-shrink:0; margin-left:1rem;">
+                    <span class="mono" style="font-size:1rem; font-weight:700; color:var(--accent);">{{ item.match_percentage }}%</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--border-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}
